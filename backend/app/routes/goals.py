@@ -36,3 +36,12 @@ async def goals_step(request: Request, step: int):
     if not data:
         return response.json({"error": "Step not found"}, status=404)
     return response.json(data)
+
+@goals_bp.route('/<step:int>/save', methods=["POST"])
+async def goals_save(request: Request, step: int):
+    # Mock response for saving goals step
+    return response.json({
+        "success": True,
+        "recommendations": ["Keep up the good work!"],
+        "nextStep": step + 1
+    })

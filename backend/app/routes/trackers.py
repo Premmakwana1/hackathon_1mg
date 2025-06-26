@@ -39,4 +39,13 @@ async def trackers_step(request: Request, step: int):
     data = TRACKERS_MOCK.get(step)
     if not data:
         return response.json({"error": "Step not found"}, status=404)
-    return response.json(data) 
+    return response.json(data)
+
+@trackers_bp.route('/<step:int>/save', methods=["POST"])
+async def trackers_save(request: Request, step: int):
+    # Mock response for saving trackers step
+    return response.json({
+        "success": True,
+        "configuredTrackers": ["steps", "sleep"],
+        "nextStep": step + 1
+    }) 

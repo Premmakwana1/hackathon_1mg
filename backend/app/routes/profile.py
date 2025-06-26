@@ -48,3 +48,12 @@ async def basic_profile_step(request: Request, step: int):
     if not data:
         return response.json({"error": "Step not found"}, status=404)
     return response.json(data)
+
+@profile_bp.route('/basic/<step:int>/save', methods=["POST"])
+async def profile_save(request: Request, step: int):
+    # Mock response for saving profile step
+    return response.json({
+        "success": True,
+        "validationErrors": {},
+        "nextStep": step + 1
+    })

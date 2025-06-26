@@ -73,4 +73,28 @@ async def hra_step(request: Request, step: int):
     data = HRA_MOCK.get(step)
     if not data:
         return response.json({"error": "Step not found"}, status=404)
-    return response.json(data) 
+    return response.json(data)
+
+@hra_bp.route('/<step:int>/save', methods=["POST"])
+async def hra_save(request: Request, step: int):
+    # Mock response for saving HRA step
+    return response.json({
+        "success": True,
+        "riskAssessment": {"risk": "Low"},
+        "recommendations": ["Stay healthy!"],
+        "nextStep": step + 1
+    })
+
+@hra_bp.route('/report')
+async def hra_report(request: Request):
+    # Mock HRA report response
+    return response.json({
+        "overallRisk": "Low",
+        "riskFactors": ["Sedentary lifestyle", "Poor diet quality"],
+        "recommendations": [
+            "Increase physical activity",
+            "Eat more fruits and vegetables",
+            "Manage stress effectively"
+        ],
+        "nextSteps": ["Schedule a checkup", "Start a fitness plan"]
+    }) 

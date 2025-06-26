@@ -65,3 +65,12 @@ async def onboarding_step(request: Request, step: int):
     if not data:
         return response.json({"error": "Step not found"}, status=404)
     return response.json(data)
+
+@onboarding_bp.route('/<step:int>/save', methods=["POST"])
+async def onboarding_save(request: Request, step: int):
+    # Mock response for saving onboarding step
+    return response.json({
+        "success": True,
+        "nextStep": step + 1,
+        "message": f"Step {step} saved successfully."
+    })
