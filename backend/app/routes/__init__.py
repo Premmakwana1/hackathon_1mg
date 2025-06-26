@@ -25,6 +25,5 @@ v1_blueprints = Blueprint.group(
     search_bp,
     user_progress_bp,
     navigation_bp,
-    url_prefix="/api",
-    version=1,
+    url_prefix="/v1/api"
 ) 

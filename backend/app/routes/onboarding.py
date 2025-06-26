@@ -71,6 +71,6 @@ async def onboarding_save(request: Request, step: int):
     # Mock response for saving onboarding step
     return response.json({
         "success": True,
-        "nextStep": step + 1,
+        "nextStep": step + 2,
         "message": f"Step {step} saved successfully."
     })
