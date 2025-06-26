@@ -9,6 +9,8 @@ from sanic.log import logger
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 from pymongo import ASCENDING
+from app.models.launchpad.assessment import AssessmentTemplatePayload, AssessmentAnswersPayload
+from pydantic import ValidationError
 
 class AssessmentServiceException(Exception):
     pass
@@ -44,11 +46,17 @@ class AssessmentService:
     async def start_assessment(self, user_id: str, template: Dict[str, Any]) -> str:
         """Start a new assessment session for the user, based on a template (dict with steps/questions). Returns session_id."""
         try:
+            # Validate template input
+            try:
+                validated_template = AssessmentTemplatePayload(**template)
+            except ValidationError as ve:
+                logger.error(f"Assessment template validation error for {user_id}: {ve}")
+                raise AssessmentServiceException(f"Invalid assessment template: {ve}")
             session_id = str(uuid.uuid4())
             assessment_doc = {
                 "session_id": session_id,
                 "user_id": user_id,
-                "template": template,  # Should be validated/structured as needed
+                "template": validated_template.dict(),
                 "responses": {},
                 "status": "in_progress",
                 "started_at": datetime.utcnow().isoformat(),
@@ -56,6 +64,8 @@ class AssessmentService:
             }
             await self.collection.insert_one(assessment_doc)
             return session_id
+        except AssessmentServiceException:
+            raise
         except Exception as e:
             logger.error(f"Error starting assessment for {user_id}: {e}")
             raise AssessmentServiceException("Failed to start assessment")
@@ -72,11 +82,19 @@ class AssessmentService:
     async def submit_assessment(self, user_id: str, session_id: str, answers: Dict[str, Any]) -> bool:
         """Submit answers for an assessment session. Marks as completed."""
         try:
+            # Validate answers input
+            try:
+                validated_answers = AssessmentAnswersPayload(answers=answers)
+            except ValidationError as ve:
+                logger.error(f"Assessment answers validation error for {user_id}, {session_id}: {ve}")
+                raise AssessmentServiceException(f"Invalid assessment answers: {ve}")
             result = await self.collection.update_one(
                 {"user_id": user_id, "session_id": session_id, "status": "in_progress"},
-                {"$set": {"responses": answers, "status": "completed", "completed_at": datetime.utcnow().isoformat()}}
+                {"$set": {"responses": validated_answers.answers, "status": "completed", "completed_at": datetime.utcnow().isoformat()}}
             )
             return result.modified_count > 0
+        except AssessmentServiceException:
+            raise
         except Exception as e:
             logger.error(f"Error submitting assessment for {user_id}: {e}")
             raise AssessmentServiceException("Failed to submit assessment")
