@@ -1,0 +1,15 @@
+{
+  "trackerType": "Sleep",
+  "history": [
+    { "date": "2025-06-20", "value": 7 },
+    { "date": "2025-06-21", "value": 8 },
+    { "date": "2025-06-22", "value": 6.5 },
+    { "date": "2025-06-23", "value": 7.5 },
+    { "date": "2025-06-24", "value": 7 },
+    { "date": "2025-06-25", "value": 8 },
+    { "date": "2025-06-26", "value": 7.5 }
+  ],
+  "goal": 8,
+  "unit": "hours",
+  "progress": 93
+} 

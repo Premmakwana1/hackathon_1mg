@@ -1,0 +1,26 @@
+{
+  "step": 1,
+  "questions": [
+    {
+      "id": "age",
+      "type": "number",
+      "label": "What's your age?",
+      "placeholder": "Enter your age",
+      "required": true,
+      "validation": { "min": 13, "max": 120 }
+    },
+    {
+      "id": "gender",
+      "type": "radio",
+      "label": "Select your gender",
+      "required": true,
+      "options": [
+        { "value": "male", "label": "Male", "icon": "male" },
+        { "value": "female", "label": "Female", "icon": "female" },
+        { "value": "other", "label": "Others", "icon": "other" }
+      ]
+    }
+  ],
+  "userResponses": {},
+  "validationErrors": {}
+} 

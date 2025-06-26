@@ -1,0 +1,15 @@
+{
+  "userName": "John Doe",
+  "assessment": {
+    "id": 1,
+    "title": "Wellness Assessment",
+    "description": "Answer a few questions to get your wellness score.",
+    "status": "not_started",
+    "questionsCount": 10,
+    "estimatedTime": "5 mins"
+  },
+  "actions": [
+    { "type": "start", "label": "Start Assessment" },
+    { "type": "resume", "label": "Resume Assessment" }
+  ]
+} 

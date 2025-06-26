@@ -1,0 +1,8 @@
+{
+  "userName": "John Doe",
+  "settings": [
+    { "id": "notifications", "label": "Enable Notifications", "type": "toggle", "value": true },
+    { "id": "reminders", "label": "Daily Reminders", "type": "toggle", "value": false },
+    { "id": "theme", "label": "Dark Mode", "type": "toggle", "value": true }
+  ]
+} 
