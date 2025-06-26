@@ -1,0 +1,24 @@
+{
+  "NAME": "launchpad-backend",
+  "HOST": "0.0.0.0",
+  "PORT": 8000,
+  "DEBUG": true,
+  "MONGO": {
+    "DB_NAME": "launchpad_db",
+    "HOSTS": ["localhost:27017"],
+    "USER": "",
+    "PASS": "",
+    "CONNECT_TIMEOUT_MS": 10000,
+    "MAX_POOL": 10,
+    "MIN_POOL": 2
+  },
+  "API": {
+    "ENABLE_LOGGING": true,
+    "TIMEOUTS": {
+      "DEFAULT": 3
+    }
+  },
+  "APP": {
+    "HOST": "http://localhost:8000"
+  }
+} 
