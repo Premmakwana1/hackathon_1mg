@@ -2,6 +2,7 @@ from sanic import Blueprint, response, Request
 
 home_bp = Blueprint('home', url_prefix='/home')
 
+@home_bp.route('/')
 async def home_handler(request: Request):
     return response.json({
         "userName": "John Doe",

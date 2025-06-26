@@ -2,6 +2,7 @@ from sanic import Blueprint, response, Request
 
 wellness_bp = Blueprint('wellness', url_prefix='/wellness')
 
+@wellness_bp.route('/intro')
 async def wellness_intro_handler(request: Request):
     return response.json({
         "welcomeMessage": "Welcome to Your Wellness Journey",
