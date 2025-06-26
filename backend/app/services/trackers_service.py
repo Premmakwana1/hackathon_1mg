@@ -1,8 +1,4 @@
-from sanic import Blueprint, response, Request
-from app.services.trackers_service import get_trackers_step, save_trackers_step
 from app.db.config import DB_NAME
-
-trackers_bp = Blueprint('trackers', url_prefix='/trackers')
 
 TRACKERS_MOCK = {
     1: {
@@ -36,21 +32,32 @@ TRACKERS_MOCK = {
     }
 }
 
-@trackers_bp.route('/<step:int>')
-async def trackers_step(request: Request, step: int):
-    user_id = request.args.get('user_id') or request.headers.get('user-id')
-    if not user_id:
-        return response.json({"error": "Missing user_id"}, status=400)
-    data = await get_trackers_step(request.app.ctx.mongo, user_id, step)
-    if not data:
-        return response.json({"error": "Step not found"}, status=404)
-    return response.json(data)
+async def get_trackers_step(mongo, user_id, step):
+    doc = await mongo[DB_NAME]['trackers'].find_one({"user_id": user_id})
+    if not doc or "steps" not in doc:
+        return None
+    for s in doc["steps"]:
+        if s.get("step") == step:
+            return s
+    return None
 
-@trackers_bp.route('/<step:int>/save', methods=["POST"])
-async def trackers_save(request: Request, step: int):
-    user_id = request.args.get('user_id') or request.headers.get('user-id')
-    if not user_id:
-        return response.json({"error": "Missing user_id"}, status=400)
-    step_data = await request.json()
-    result = await save_trackers_step(request.app.ctx.mongo, user_id, step, step_data)
-    return response.json(result) 
+async def save_trackers_step(mongo, user_id, step, step_data):
+    doc = await mongo[DB_NAME]['trackers'].find_one({"user_id": user_id})
+    if not doc or "steps" not in doc:
+        steps = [step_data]
+    else:
+        steps = doc["steps"]
+        updated = False
+        for idx, s in enumerate(steps):
+            if s.get("step") == step:
+                steps[idx] = step_data
+                updated = True
+                break
+        if not updated:
+            steps.append(step_data)
+    await mongo[DB_NAME]['trackers'].update_one(
+        {"user_id": user_id},
+        {"$set": {"steps": steps}},
+        upsert=True
+    )
+    return {"success": True, "nextStep": step + 1} 

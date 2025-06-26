@@ -8,6 +8,7 @@ from sanic.log import logger
 from typing import Optional, Dict, Any
 from pymongo import ASCENDING
 from pydantic import ValidationError
+from app.db.config import DB_NAME
 
 class WellnessServiceException(Exception):
     pass
@@ -56,4 +57,10 @@ class WellnessService:
             raise WellnessServiceException("Invalid user_id or data format")
         except Exception as e:
             logger.error(f"Error getting wellness data for {user_id}: {e}")
-            raise WellnessServiceException("Failed to get wellness data") 
+            raise WellnessServiceException("Failed to get wellness data")
+
+async def get_wellness_intro(mongo, user_id=None):
+    # Try user-specific first, fallback to default
+    query = {"user_id": user_id} if user_id else {"type": "default"}
+    doc = await mongo[DB_NAME]['wellness'].find_one(query)
+    return doc.get("intro", {}) if doc else {} 

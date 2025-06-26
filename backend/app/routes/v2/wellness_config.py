@@ -1,5 +1,6 @@
 from sanic import Blueprint, response, Request
 from app.services.launchpad.user_service import get_user_config
+from app.services.wellness_config_service import get_wellness_config
 
 wellness_config_bp = Blueprint('wellness_config', url_prefix='/api/wellness')
 
@@ -17,6 +18,5 @@ def keys_to_camel(obj):
 
 @wellness_config_bp.route('/config')
 async def wellness_config(request: Request):
-    user_config = await get_user_config(request.app)
-    camel_config = keys_to_camel(user_config.model_dump())
+    camel_config = await get_wellness_config(request.app)
     return response.json(camel_config) 

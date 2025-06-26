@@ -16,6 +16,6 @@ MONGO_PASS = os.getenv("MONGO_PASS", mongo_conf.get("PASS", ""))
 if isinstance(MONGO_HOSTS, str):
     MONGO_HOSTS = MONGO_HOSTS.split(",")
 
-MONGO_URI = f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOSTS[0]}/{DB_NAME}?retryWrites=true&w=majority"
+MONGO_URI = f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOSTS[0]}/{DB_NAME}?retryWrites=true&w=majority&ssl=true&tlsAllowInvalidCertificates=true"
 
 API_VERSION = config.get("API_VERSION", "v1") 

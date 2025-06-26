@@ -11,6 +11,7 @@ from typing import Optional, List, Dict, Any
 from datetime import datetime, timedelta
 from pymongo import ASCENDING
 from calendar import monthrange
+from app.db.config import DB_NAME
 
 class ActivityServiceException(Exception):
     pass
@@ -208,4 +209,26 @@ class ActivityService:
             return max(timestamps)
         except Exception as e:
             logger.error(f"Error getting last sync time for {user_id}: {e}")
-            raise ActivityServiceException("Failed to get last sync time") 
+            raise ActivityServiceException("Failed to get last sync time")
+
+async def get_activity_dashboard(mongo, user_id):
+    doc = await mongo[DB_NAME]['activities'].find_one({"user_id": user_id})
+    if not doc:
+        return None
+    return doc.get("dashboard", {})
+
+async def log_activity(mongo, user_id, activity_data):
+    result = await mongo[DB_NAME]['activities'].update_one(
+        {"user_id": user_id},
+        {"$push": {"logs": activity_data}},
+        upsert=True
+    )
+    return {"success": True, "activityId": str(activity_data.get("id", ""))}
+
+async def update_activity_goals(mongo, user_id, goals_data):
+    result = await mongo[DB_NAME]['activities'].update_one(
+        {"user_id": user_id},
+        {"$set": {"goals": goals_data}},
+        upsert=True
+    )
+    return {"success": True, "updatedGoals": goals_data} 

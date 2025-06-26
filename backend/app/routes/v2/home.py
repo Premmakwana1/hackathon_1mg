@@ -1,22 +1,15 @@
 from sanic import Blueprint, response, Request
+from app.db.config import DB_NAME
+from app.services.home_service import get_home_data
 
 home_bp = Blueprint('home', url_prefix='/home')
 
 @home_bp.route('/')
 async def home_handler(request: Request):
-    return response.json({
-        "userName": "John Doe",
-        "healthScore": 85,
-        "dailyGoals": [
-            {"id": 1, "title": "Steps", "current": 7500, "target": 10000, "unit": "steps", "progress": 75},
-            {"id": 2, "title": "Water Intake", "current": 6, "target": 8, "unit": "glasses", "progress": 75},
-            {"id": 3, "title": "Sleep", "current": 7, "target": 8, "unit": "hours", "progress": 87.5}
-        ],
-        "recentActivities": [
-            {"id": 1, "type": "exercise", "title": "Morning Walk", "duration": "30 mins", "timestamp": "2025-06-26T06:30:00Z"},
-            {"id": 2, "type": "meal", "title": "Healthy Breakfast", "calories": 350, "timestamp": "2025-06-26T08:00:00Z"}
-        ],
-        "upcomingAppointments": [
-            {"id": 1, "type": "doctor", "title": "Annual Checkup", "date": "2025-06-28", "time": "10:00 AM", "doctor": "Dr. Smith"}
-        ]
-    })
+    user_id = request.args.get('user_id') or request.headers.get('user-id')
+    if not user_id:
+        return response.json({"error": "Missing user_id"}, status=400)
+    data = await get_home_data(request.app.ctx.mongo, DB_NAME, user_id)
+    if data:
+        return response.json(data)
+    return response.json({"error": "Home data not found"}, status=404)

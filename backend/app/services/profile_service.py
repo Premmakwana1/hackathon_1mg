@@ -10,6 +10,7 @@ from sanic.log import logger
 from typing import Optional, Dict, Any, List
 from pymongo import ASCENDING
 from pydantic import BaseModel
+from app.db.config import DB_NAME
 
 class ProfilePayload(BaseModel):
     steps: List[ProfileStep]
@@ -98,4 +99,43 @@ class ProfileService:
             return result.deleted_count > 0
         except Exception as e:
             logger.error(f"Error deleting profile for {user_id}: {e}")
-            raise ProfileServiceException("Failed to delete profile") 
+            raise ProfileServiceException("Failed to delete profile")
+
+    async def get_profile_step(self, user_id: str, step: int):
+        doc = await self.collection.find_one({"user_id": user_id})
+        if not doc or "profile" not in doc or "steps" not in doc["profile"]:
+            return None
+        steps = doc["profile"]["steps"]
+        for s in steps:
+            if s["step"] == step:
+                return s
+        return None
+
+    async def save_profile_step(self, user_id: str, step: int, step_data: dict):
+        # Validate step_data using ProfileStep
+        step_obj = ProfileStep(**step_data)
+        doc = await self.collection.find_one({"user_id": user_id})
+        if not doc or "profile" not in doc or "steps" not in doc["profile"]:
+            # Create new profile with this step
+            profile = {"steps": [step_obj.dict()]}
+            await self.collection.update_one(
+                {"user_id": user_id},
+                {"$set": {"profile": profile}},
+                upsert=True
+            )
+            return {"success": True, "nextStep": step + 1}
+        # Update or add the step
+        steps = doc["profile"]["steps"]
+        updated = False
+        for idx, s in enumerate(steps):
+            if s["step"] == step:
+                steps[idx] = step_obj.dict()
+                updated = True
+                break
+        if not updated:
+            steps.append(step_obj.dict())
+        await self.collection.update_one(
+            {"user_id": user_id},
+            {"$set": {"profile.steps": steps}}
+        )
+        return {"success": True, "nextStep": step + 1} 
