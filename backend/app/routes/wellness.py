@@ -29,5 +29,3 @@ async def wellness_intro_handler(request: Request):
             {"id": 2, "text": "Learn More", "type": "secondary", "action": "scroll", "target": "#features"}
         ]
     })
-
-wellness_bp.add_route(wellness_intro_handler, '/intro') 
