@@ -3,6 +3,7 @@
   "HOST": "0.0.0.0",
   "PORT": 8000,
   "DEBUG": true,
+  "API_VERSION": "v1",
   "MONGO": {
     "DB_NAME": "launchpad_db",
     "HOSTS": ["localhost:27017"],

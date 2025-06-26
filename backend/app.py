@@ -1,6 +1,7 @@
 from sanic import Sanic
 from app.db.mongo import init_mongo
-from app.routes import v1_blueprints
+from app.routes import get_api_blueprints
+from app.db.config import API_VERSION
 
 app = Sanic("launchpad-backend")
 
@@ -8,7 +9,7 @@ app = Sanic("launchpad-backend")
 async def setup_db(app, loop):
     await init_mongo(app)
 
-app.blueprint(v1_blueprints)
+app.blueprint(get_api_blueprints(API_VERSION))
 
 for route in app.router.routes_all:
     print(route)
