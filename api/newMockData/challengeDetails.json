@@ -1,0 +1,20 @@
+{
+  "challengeId": 1,
+  "title": "10K Steps Challenge",
+  "description": "Walk 10,000 steps every day for a week.",
+  "status": "in_progress",
+  "progress": 60,
+  "days": [
+    { "date": "2025-06-20", "completed": true },
+    { "date": "2025-06-21", "completed": true },
+    { "date": "2025-06-22", "completed": false },
+    { "date": "2025-06-23", "completed": true },
+    { "date": "2025-06-24", "completed": true },
+    { "date": "2025-06-25", "completed": false },
+    { "date": "2025-06-26", "completed": false }
+  ],
+  "reward": {
+    "type": "badge",
+    "name": "Step Master"
+  }
+} 

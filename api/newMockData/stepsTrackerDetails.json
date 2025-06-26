@@ -1,0 +1,15 @@
+{
+  "trackerType": "Steps",
+  "history": [
+    { "date": "2025-06-20", "value": 8200 },
+    { "date": "2025-06-21", "value": 10500 },
+    { "date": "2025-06-22", "value": 9900 },
+    { "date": "2025-06-23", "value": 12000 },
+    { "date": "2025-06-24", "value": 7600 },
+    { "date": "2025-06-25", "value": 8700 },
+    { "date": "2025-06-26", "value": 9100 }
+  ],
+  "goal": 10000,
+  "unit": "steps",
+  "progress": 82
+} 

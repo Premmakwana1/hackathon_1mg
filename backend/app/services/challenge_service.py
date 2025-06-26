@@ -97,4 +97,47 @@ class ChallengeService:
             return result.deleted_count > 0
         except Exception as e:
             logger.error(f"Error leaving challenge for {user_id}: {e}")
-            raise ChallengeServiceException("Failed to leave challenge") 
+            raise ChallengeServiceException("Failed to leave challenge")
+
+    async def get_challenge_progress(self, user_id: str, challenge_id: str) -> Dict[str, Any]:
+        """Return progress, check-ins, total checkpoints, completion percent, and challenge details for a user's challenge."""
+        try:
+            user_chal = await self.user_challenges.find_one({"user_id": user_id, "challenge_id": challenge_id})
+            chal = await self.challenges.find_one({"challenge_id": challenge_id})
+            if not user_chal or not chal:
+                return {}
+            check_ins = user_chal.get("check_ins", [])
+            total_checkpoints = chal.get("duration", len(check_ins))
+            progress = len(check_ins)
+            completion_percent = int((progress / total_checkpoints) * 100) if total_checkpoints else 0
+            return {
+                "challenge_id": challenge_id,
+                "title": chal.get("title"),
+                "description": chal.get("description"),
+                "tags": chal.get("tags", []),
+                "duration": total_checkpoints,
+                "check_ins": check_ins,
+                "progress": progress,
+                "completion_percent": completion_percent,
+                "status": user_chal.get("status", "in_progress"),
+            }
+        except Exception as e:
+            logger.error(f"Error getting challenge progress for {user_id}, {challenge_id}: {e}")
+            raise ChallengeServiceException("Failed to get challenge progress")
+
+    async def get_user_challenges_by_status(self, user_id: str, status: str) -> List[Dict[str, Any]]:
+        """List user challenges filtered by status (e.g., in_progress, completed)."""
+        try:
+            return [doc async for doc in self.user_challenges.find({"user_id": user_id, "status": status})]
+        except Exception as e:
+            logger.error(f"Error getting user challenges by status for {user_id}: {e}")
+            raise ChallengeServiceException("Failed to get user challenges by status")
+
+    async def get_challenge_details(self, challenge_id: str) -> Dict[str, Any]:
+        """Fetch all details for a specific challenge."""
+        try:
+            chal = await self.challenges.find_one({"challenge_id": challenge_id})
+            return chal if chal else {}
+        except Exception as e:
+            logger.error(f"Error getting challenge details for {challenge_id}: {e}")
+            raise ChallengeServiceException("Failed to get challenge details") 

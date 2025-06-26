@@ -1,0 +1,15 @@
+{
+  "step": 1,
+  "categories": [
+    { "id": "fitness", "title": "Fitness Trackers", "description": "Monitor your physical activities" },
+    { "id": "health", "title": "Health Monitors", "description": "Track vital health metrics" },
+    { "id": "lifestyle", "title": "Lifestyle Trackers", "description": "Monitor daily habits and routines" }
+  ],
+  "availableTrackers": [
+    { "id": "steps", "title": "Step Counter", "description": "Track daily steps and distance", "category": "fitness", "icon": "steps", "enabled": true, "defaultGoal": 10000 },
+    { "id": "calories", "title": "Calorie Tracker", "description": "Monitor calories burned and consumed", "category": "fitness", "icon": "calories", "enabled": false, "defaultGoal": 2000 },
+    { "id": "heart_rate", "title": "Heart Rate Monitor", "description": "Track resting and active heart rate", "category": "health", "icon": "heart", "enabled": false, "defaultGoal": 70 },
+    { "id": "sleep", "title": "Sleep Tracker", "description": "Monitor sleep duration and quality", "category": "lifestyle", "icon": "sleep", "enabled": true, "defaultGoal": 8 }
+  ],
+  "selectedTrackers": ["steps", "sleep"]
+} 
