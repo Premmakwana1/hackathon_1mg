@@ -1,4 +1,29 @@
 # Ignore Python cache directories and compiled files
 __pycache__/
 **/__pycache__/
-*.pyc 
+*.pyc
+
+# Environment variables and sensitive files
+.env
+*.env
+backend/.env
+backend/env.local
+backend/config.local.json
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp 
