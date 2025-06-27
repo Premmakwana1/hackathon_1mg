@@ -17,6 +17,6 @@ async def user_progress_update(request: Request):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
         return response.json({"error": "Missing user_id"}, status=400)
-    progress_data = await request.json()
+    progress_data = request.json
     result = await update_user_progress(request.app.ctx.mongo, user_id, progress_data)
     return response.json(result) 

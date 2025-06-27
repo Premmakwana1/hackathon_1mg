@@ -212,21 +212,28 @@ class ActivityService:
             raise ActivityServiceException("Failed to get last sync time")
 
 async def get_activity_dashboard(mongo, user_id):
-    doc = await mongo[DB_NAME]['activities'].find_one({"user_id": user_id})
+    doc = await mongo[DB_NAME]['activity_tracker'].find_one({"user_id": user_id})
     if not doc:
         return None
-    return doc.get("dashboard", {})
+    # Return the actual data structure, excluding _id and user_id
+    return {
+        "todayStats": doc.get("todayStats", {}),
+        "weeklyStats": doc.get("weeklyStats", {}),
+        "activities": doc.get("activities", []),
+        "goals": doc.get("goals", {}),
+        "achievements": doc.get("achievements", [])
+    }
 
 async def log_activity(mongo, user_id, activity_data):
-    result = await mongo[DB_NAME]['activities'].update_one(
+    result = await mongo[DB_NAME]['activity_tracker'].update_one(
         {"user_id": user_id},
-        {"$push": {"logs": activity_data}},
+        {"$push": {"activities": activity_data}},
         upsert=True
     )
     return {"success": True, "activityId": str(activity_data.get("id", ""))}
 
 async def update_activity_goals(mongo, user_id, goals_data):
-    result = await mongo[DB_NAME]['activities'].update_one(
+    result = await mongo[DB_NAME]['activity_tracker'].update_one(
         {"user_id": user_id},
         {"$set": {"goals": goals_data}},
         upsert=True

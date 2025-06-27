@@ -11,7 +11,7 @@ async def search_get(request: Request):
 
 @search_bp.route('/query', methods=["POST"])
 async def search_query(request: Request):
-    body = await request.json()
+    body = request.json
     query = body.get('query', '')
     data = await search_query_results(request.app.ctx.mongo, query)
     return response.json(data) 

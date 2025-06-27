@@ -24,13 +24,13 @@ class ProfileService:
         if collection is not None:
             self.collection = collection
         else:
-            self.collection = app.ctx.mongo['launchpad_db']['user_profiles']
+            self.collection = app.ctx.mongo['launchpad_db']['profile']
 
     @classmethod
     def register_listeners(cls, app: Sanic):
         @app.listener('before_server_start')
         async def ensure_indexes(app, loop):
-            collection = app.ctx.mongo['launchpad_db']['user_profiles']
+            collection = app.ctx.mongo['launchpad_db']['profile']
             try:
                 await collection.create_index([('user_id', ASCENDING)], unique=True)
             except Exception as e:
@@ -112,28 +112,30 @@ class ProfileService:
         return None
 
     async def save_profile_step(self, user_id: str, step: int, step_data: dict):
-        # Validate step_data using ProfileStep
-        step_obj = ProfileStep(**step_data)
+        # step_data should contain userResponses
         doc = await self.collection.find_one({"user_id": user_id})
         if not doc or "profile" not in doc or "steps" not in doc["profile"]:
             # Create new profile with this step
-            profile = {"steps": [step_obj.dict()]}
+            profile = {"steps": [{"step": step, "questions": [], "userResponses": step_data, "validationErrors": {}}]}
             await self.collection.update_one(
                 {"user_id": user_id},
                 {"$set": {"profile": profile}},
                 upsert=True
             )
             return {"success": True, "nextStep": step + 1}
+        
         # Update or add the step
         steps = doc["profile"]["steps"]
         updated = False
         for idx, s in enumerate(steps):
             if s["step"] == step:
-                steps[idx] = step_obj.dict()
+                # Merge userResponses with existing step data
+                s["userResponses"] = step_data
                 updated = True
                 break
         if not updated:
-            steps.append(step_obj.dict())
+            steps.append({"step": step, "questions": [], "userResponses": step_data, "validationErrors": {}})
+        
         await self.collection.update_one(
             {"user_id": user_id},
             {"$set": {"profile.steps": steps}}

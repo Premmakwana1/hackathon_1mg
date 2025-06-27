@@ -58,20 +58,24 @@ ONBOARDING_MOCK = {
 }
 
 async def get_onboarding_step(mongo, user_id, step):
-    doc = await mongo[DB_NAME]['onboarding'].find_one({"user_id": user_id})
-    if not doc or "steps" not in doc:
+    doc = await mongo[DB_NAME]['user'].find_one({"id": int(user_id)})
+    if not doc or "onboarding" not in doc or "steps" not in doc["onboarding"]:
         return None
-    for s in doc["steps"]:
+    for s in doc["onboarding"]["steps"]:
         if s.get("step") == step:
             return s
     return None
 
 async def save_onboarding_step(mongo, user_id, step, step_data):
-    doc = await mongo[DB_NAME]['onboarding'].find_one({"user_id": user_id})
-    if not doc or "steps" not in doc:
-        steps = [step_data]
+    # Ensure step_data always has the step field
+    step_data = dict(step_data)
+    step_data["step"] = step
+    doc = await mongo[DB_NAME]['user'].find_one({"id": int(user_id)})
+    if not doc or "onboarding" not in doc or "steps" not in doc["onboarding"]:
+        onboarding = {"steps": [step_data]}
     else:
-        steps = doc["steps"]
+        onboarding = doc["onboarding"]
+        steps = onboarding["steps"]
         updated = False
         for idx, s in enumerate(steps):
             if s.get("step") == step:
@@ -80,9 +84,10 @@ async def save_onboarding_step(mongo, user_id, step, step_data):
                 break
         if not updated:
             steps.append(step_data)
-    await mongo[DB_NAME]['onboarding'].update_one(
-        {"user_id": user_id},
-        {"$set": {"steps": steps}},
+        onboarding["steps"] = steps
+    await mongo[DB_NAME]['user'].update_one(
+        {"id": int(user_id)},
+        {"$set": {"onboarding": onboarding}},
         upsert=True
     )
     return {"success": True, "nextStep": step + 1} 

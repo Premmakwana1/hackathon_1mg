@@ -1,14 +1,17 @@
-def save_continue():
-    return {
-        "success": True,
-        "nextRoute": "/api/v1/onboarding/2",
-        "nextStep": 2,
-        "message": "Progress saved. Continue to next step."
-    }
+from app.db.config import DB_NAME
 
-def save_exit():
-    return {
-        "success": True,
-        "resumeToken": "resume_abc123",
-        "message": "Progress saved. You can resume later."
-    } 
+async def save_continue(mongo, user_id, data):
+    await mongo[DB_NAME]['user'].update_one(
+        {"id": int(user_id)},
+        {"$set": {"navigation": {"continue": data}}},
+        upsert=True
+    )
+    return {"success": True, "nextRoute": data.get("nextRoute"), "nextStep": data.get("nextStep"), "message": data.get("message")}
+
+async def save_exit(mongo, user_id, data):
+    await mongo[DB_NAME]['user'].update_one(
+        {"id": int(user_id)},
+        {"$set": {"navigation": {"exit": data}}},
+        upsert=True
+    )
+    return {"success": True, "resumeToken": data.get("resumeToken"), "message": data.get("message")} 

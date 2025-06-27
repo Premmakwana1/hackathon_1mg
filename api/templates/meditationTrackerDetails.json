@@ -1,0 +1,15 @@
+{
+  "trackerType": "Meditation",
+  "history": [
+    { "date": "2025-06-20", "value": 10 },
+    { "date": "2025-06-21", "value": 15 },
+    { "date": "2025-06-22", "value": 20 },
+    { "date": "2025-06-23", "value": 15 },
+    { "date": "2025-06-24", "value": 18 },
+    { "date": "2025-06-25", "value": 20 },
+    { "date": "2025-06-26", "value": 15 }
+  ],
+  "goal": 20,
+  "unit": "mins",
+  "progress": 75
+} 

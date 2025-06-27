@@ -15,21 +15,4 @@ async def search_query_results(mongo, query):
     results = []
     async for doc in cursor:
         results.append(doc)
-    return {"results": results, "totalCount": len(results)}
-
-def get_search_suggestions():
-    return {
-        "suggestions": ["Weight loss exercises", "Healthy breakfast recipes", "Stress management techniques"],
-        "popularSearches": ["cardio workout", "meditation", "protein recipes"],
-        "filters": {"categories": ["All", "Exercise", "Nutrition"], "difficulty": ["All", "Beginner"], "duration": ["All", "10-30 min"]}
-    }
-
-def search_query_results():
-    return {
-        "results": [
-            {"id": 1, "type": "exercise", "title": "Push-ups", "description": "Chest and arm strengthening exercise"},
-            {"id": 2, "type": "recipe", "title": "Protein Smoothie", "description": "High-protein breakfast smoothie"}
-        ],
-        "totalCount": 2,
-        "suggestions": ["Try yoga", "Healthy snacks"]
-    } 
+    return {"results": results, "totalCount": len(results)} 

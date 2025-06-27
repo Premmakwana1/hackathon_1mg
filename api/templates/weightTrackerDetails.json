@@ -1,0 +1,15 @@
+{
+  "trackerType": "Weight",
+  "history": [
+    { "date": "2025-06-20", "value": 70 },
+    { "date": "2025-06-21", "value": 69.8 },
+    { "date": "2025-06-22", "value": 69.5 },
+    { "date": "2025-06-23", "value": 69.2 },
+    { "date": "2025-06-24", "value": 69 },
+    { "date": "2025-06-25", "value": 68.8 },
+    { "date": "2025-06-26", "value": 68.5 }
+  ],
+  "goal": 68,
+  "unit": "kg",
+  "progress": 97
+} 

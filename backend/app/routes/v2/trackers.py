@@ -51,6 +51,6 @@ async def trackers_save(request: Request, step: int):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
         return response.json({"error": "Missing user_id"}, status=400)
-    step_data = await request.json()
+    step_data = request.json
     result = await save_trackers_step(request.app.ctx.mongo, user_id, step, step_data)
     return response.json(result) 

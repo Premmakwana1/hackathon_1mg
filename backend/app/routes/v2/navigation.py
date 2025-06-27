@@ -9,7 +9,7 @@ async def navigation_save_continue(request: Request):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
         return response.json({"error": "Missing user_id"}, status=400)
-    data = await request.json()
+    data = request.json
     result = await save_continue(request.app.ctx.mongo, user_id, data)
     return response.json(result)
 
@@ -18,6 +18,6 @@ async def navigation_save_exit(request: Request):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
         return response.json({"error": "Missing user_id"}, status=400)
-    data = await request.json()
+    data = request.json
     result = await save_exit(request.app.ctx.mongo, user_id, data)
     return response.json(result) 

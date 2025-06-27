@@ -76,6 +76,9 @@ async def get_hra_step(mongo, user_id, step):
     return None
 
 async def save_hra_step(mongo, user_id, step, step_data):
+    # Ensure step_data always has the step field
+    step_data = dict(step_data)
+    step_data["step"] = step
     doc = await mongo[DB_NAME]['hra'].find_one({"user_id": user_id})
     if not doc or "steps" not in doc:
         steps = [step_data]

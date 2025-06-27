@@ -19,7 +19,7 @@ async def activity_log(request: Request):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
         return response.json({"error": "Missing user_id"}, status=400)
-    activity_data = await request.json()
+    activity_data = request.json
     result = await log_activity(request.app.ctx.mongo, user_id, activity_data)
     return response.json(result)
 
@@ -28,6 +28,6 @@ async def activity_goals_update(request: Request):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
         return response.json({"error": "Missing user_id"}, status=400)
-    goals_data = await request.json()
+    goals_data = request.json
     result = await update_activity_goals(request.app.ctx.mongo, user_id, goals_data)
     return response.json(result) 

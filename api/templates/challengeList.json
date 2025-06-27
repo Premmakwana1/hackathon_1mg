@@ -1,0 +1,32 @@
+{
+  "userName": "John Doe",
+  "challenges": [
+    {
+      "id": 1,
+      "title": "10K Steps Challenge",
+      "description": "Walk 10,000 steps every day for a week.",
+      "status": "in_progress",
+      "progress": 60,
+      "startDate": "2025-06-20",
+      "endDate": "2025-06-27"
+    },
+    {
+      "id": 2,
+      "title": "Hydration Hero",
+      "description": "Drink 8 glasses of water daily for 7 days.",
+      "status": "not_started",
+      "progress": 0,
+      "startDate": "2025-06-28",
+      "endDate": "2025-07-05"
+    },
+    {
+      "id": 3,
+      "title": "Sleep Well",
+      "description": "Get at least 7 hours of sleep for 5 nights.",
+      "status": "completed",
+      "progress": 100,
+      "startDate": "2025-06-10",
+      "endDate": "2025-06-15"
+    }
+  ]
+} 

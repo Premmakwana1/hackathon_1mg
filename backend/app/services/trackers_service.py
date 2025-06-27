@@ -33,20 +33,24 @@ TRACKERS_MOCK = {
 }
 
 async def get_trackers_step(mongo, user_id, step):
-    doc = await mongo[DB_NAME]['trackers'].find_one({"user_id": user_id})
-    if not doc or "steps" not in doc:
+    doc = await mongo[DB_NAME]['user'].find_one({"id": int(user_id)})
+    if not doc or "trackers" not in doc or "steps" not in doc["trackers"]:
         return None
-    for s in doc["steps"]:
+    for s in doc["trackers"]["steps"]:
         if s.get("step") == step:
             return s
     return None
 
 async def save_trackers_step(mongo, user_id, step, step_data):
-    doc = await mongo[DB_NAME]['trackers'].find_one({"user_id": user_id})
-    if not doc or "steps" not in doc:
-        steps = [step_data]
+    # Ensure step_data always has the step field
+    step_data = dict(step_data)
+    step_data["step"] = step
+    doc = await mongo[DB_NAME]['user'].find_one({"id": int(user_id)})
+    if not doc or "trackers" not in doc or "steps" not in doc["trackers"]:
+        trackers = {"steps": [step_data]}
     else:
-        steps = doc["steps"]
+        trackers = doc["trackers"]
+        steps = trackers["steps"]
         updated = False
         for idx, s in enumerate(steps):
             if s.get("step") == step:
@@ -55,9 +59,10 @@ async def save_trackers_step(mongo, user_id, step, step_data):
                 break
         if not updated:
             steps.append(step_data)
-    await mongo[DB_NAME]['trackers'].update_one(
-        {"user_id": user_id},
-        {"$set": {"steps": steps}},
+        trackers["steps"] = steps
+    await mongo[DB_NAME]['user'].update_one(
+        {"id": int(user_id)},
+        {"$set": {"trackers": trackers}},
         upsert=True
     )
     return {"success": True, "nextStep": step + 1} 
