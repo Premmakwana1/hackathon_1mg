@@ -8,7 +8,7 @@
     "DB_NAME": "launchpad",
     "HOSTS": ["launchpad.rpikq1h.mongodb.net"],
     "USER": "premmakwana",
-    "PASS": "${MONGO_PASSWORD}",
+    "PASS": "OtuQI3o6vhSnpaP5",
     "CONNECT_TIMEOUT_MS": 10000,
     "MAX_POOL": 10,
     "MIN_POOL": 2
