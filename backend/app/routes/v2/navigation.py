@@ -1,10 +1,12 @@
 from sanic import Blueprint, response, Request
 from app.services.navigation_service import save_continue, save_exit
+from app.utils.fallback_decorator import with_fallback
 from app.db.config import DB_NAME
 
 navigation_bp = Blueprint('navigation', url_prefix='/navigation')
 
 @navigation_bp.route('/save-continue', methods=["POST"])
+@with_fallback('navigation_continue')
 async def navigation_save_continue(request: Request):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
@@ -14,6 +16,7 @@ async def navigation_save_continue(request: Request):
     return response.json(result)
 
 @navigation_bp.route('/save-exit', methods=["POST"])
+@with_fallback('navigation_exit')
 async def navigation_save_exit(request: Request):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:

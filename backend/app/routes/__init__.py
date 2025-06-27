@@ -54,7 +54,7 @@ v2_blueprints = Blueprint.group(
     search_v2_bp,
     user_progress_v2_bp,
     navigation_v2_bp,
-    url_prefix="/v2/api"
+    url_prefix="/v1/api"
 )
 
 def get_api_blueprints(version: str):

@@ -1,10 +1,12 @@
 from sanic import Blueprint, response, Request
 from app.services.hra_service import get_hra_step, save_hra_step, get_hra_report
+from app.utils.fallback_decorator import with_step_fallback, with_fallback
 from app.db.config import DB_NAME
 
 hra_bp = Blueprint('hra', url_prefix='/hra')
 
 @hra_bp.route('/<step:int>')
+@with_step_fallback('hra')
 async def hra_step(request: Request, step: int):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
@@ -15,6 +17,7 @@ async def hra_step(request: Request, step: int):
     return response.json(data)
 
 @hra_bp.route('/<step:int>/save', methods=["POST"])
+@with_step_fallback('hra')
 async def hra_save(request: Request, step: int):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
@@ -24,6 +27,7 @@ async def hra_save(request: Request, step: int):
     return response.json(result)
 
 @hra_bp.route('/report')
+@with_fallback('hra_report')
 async def hra_report(request: Request):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:

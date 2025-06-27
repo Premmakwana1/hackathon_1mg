@@ -1,10 +1,12 @@
 from sanic import Blueprint, response, Request
 from app.services.onboarding_service import get_onboarding_step, save_onboarding_step
+from app.utils.fallback_decorator import with_step_fallback
 from app.db.config import DB_NAME
 
 onboarding_bp = Blueprint('onboarding', url_prefix='/onboarding')
 
 @onboarding_bp.route('/<step:int>')
+@with_step_fallback('onboarding')
 async def onboarding_step(request: Request, step: int):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
@@ -15,6 +17,7 @@ async def onboarding_step(request: Request, step: int):
     return response.json(data)
 
 @onboarding_bp.route('/<step:int>/save', methods=["POST"])
+@with_step_fallback('onboarding')
 async def onboarding_save(request: Request, step: int):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:

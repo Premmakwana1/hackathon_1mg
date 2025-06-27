@@ -2,7 +2,9 @@ from app.db.config import DB_NAME
 
 async def get_search_suggestions(mongo):
     doc = await mongo[DB_NAME]['search'].find_one({"type": "suggestions"})
-    return doc.get("data", {}) if doc else {}
+    if doc and doc.get("data"):
+        return doc.get("data")
+    return None  # Return None to trigger fallback
 
 async def search_query_results(mongo, query):
     # For demo, just return all results that match the query in 'title' or 'description'
@@ -15,4 +17,7 @@ async def search_query_results(mongo, query):
     results = []
     async for doc in cursor:
         results.append(doc)
-    return {"results": results, "totalCount": len(results)} 
+    
+    if results:
+        return {"results": results, "totalCount": len(results)}
+    return None  # Return None to trigger fallback 

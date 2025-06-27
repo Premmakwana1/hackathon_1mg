@@ -1,10 +1,12 @@
 from sanic import Blueprint, response, Request
 from app.services.user_progress_service import get_user_progress, update_user_progress
+from app.utils.fallback_decorator import with_fallback
 from app.db.config import DB_NAME
 
 user_progress_bp = Blueprint('user_progress', url_prefix='/user/progress')
 
 @user_progress_bp.route('/')
+@with_fallback('user_progress')
 async def user_progress_get(request: Request):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
@@ -13,6 +15,7 @@ async def user_progress_get(request: Request):
     return response.json(data)
 
 @user_progress_bp.route('/update', methods=["POST"])
+@with_fallback('user_progress_update')
 async def user_progress_update(request: Request):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:

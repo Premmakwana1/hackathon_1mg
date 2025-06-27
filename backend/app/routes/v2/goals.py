@@ -1,10 +1,12 @@
 from sanic import Blueprint, response, Request
 from app.services.goals_service import get_goals_step, save_goals_step
+from app.utils.fallback_decorator import with_step_fallback
 from app.db.config import DB_NAME
 
 goals_bp = Blueprint('goals', url_prefix='/goals')
 
 @goals_bp.route('/<step:int>')
+@with_step_fallback('goals')
 async def goals_step(request: Request, step: int):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
@@ -15,6 +17,7 @@ async def goals_step(request: Request, step: int):
     return response.json(data)
 
 @goals_bp.route('/<step:int>/save', methods=["POST"])
+@with_step_fallback('goals')
 async def goals_save(request: Request, step: int):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:

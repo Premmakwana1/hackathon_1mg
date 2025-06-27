@@ -1,5 +1,6 @@
 from sanic import Blueprint, response, Request
 from app.services.trackers_service import get_trackers_step, save_trackers_step
+from app.utils.fallback_decorator import with_step_fallback
 from app.db.config import DB_NAME
 
 trackers_bp = Blueprint('trackers', url_prefix='/trackers')
@@ -37,6 +38,7 @@ TRACKERS_MOCK = {
 }
 
 @trackers_bp.route('/<step:int>')
+@with_step_fallback('trackers')
 async def trackers_step(request: Request, step: int):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
@@ -47,6 +49,7 @@ async def trackers_step(request: Request, step: int):
     return response.json(data)
 
 @trackers_bp.route('/<step:int>/save', methods=["POST"])
+@with_step_fallback('trackers')
 async def trackers_save(request: Request, step: int):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:

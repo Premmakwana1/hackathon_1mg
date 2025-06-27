@@ -1,10 +1,12 @@
 from sanic import Blueprint, response, Request
 from app.services.activity_service import get_activity_dashboard, log_activity, update_activity_goals
+from app.utils.fallback_decorator import with_fallback
 from app.db.config import DB_NAME
 
 activity_bp = Blueprint('activity', url_prefix='/activity')
 
 @activity_bp.route('/dashboard')
+@with_fallback('activity_dashboard')
 async def activity_dashboard(request: Request):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
@@ -15,6 +17,7 @@ async def activity_dashboard(request: Request):
     return response.json(data)
 
 @activity_bp.route('/log', methods=["POST"])
+@with_fallback('activity_log')
 async def activity_log(request: Request):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
@@ -24,6 +27,7 @@ async def activity_log(request: Request):
     return response.json(result)
 
 @activity_bp.route('/goals/update', methods=["POST"])
+@with_fallback('activity_goals')
 async def activity_goals_update(request: Request):
     user_id = request.args.get('user_id') or request.headers.get('user-id')
     if not user_id:
